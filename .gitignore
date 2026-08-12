@@ -1,0 +1,8 @@
+# Obsidian workspace state (machine-specific, not knowledge)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+# Serena tool state (machine-specific, not knowledge)
+.serena/
+# macOS
+.DS_Store

@@ -1,0 +1,9 @@
+{
+ "skill_name": "kb-compile",
+ "note": "Tested 2026-07-16, iteration-1: with_skill 18/18 (100%), baseline-with-constitution 17/18 (94%); baseline missed the task-vs-knowledge judgment call. Fixture + full results held in the primary vault. NOTE: the terms pass (SKILL.md section 2) has no eval coverage yet — that is what this plumbing vault is for.",
+ "evals": [
+  {"id": 0, "prompt": "Compile the knowledge base — process everything new in raw/ into the wiki.", "expected_output": "3 wiki notes (health-insight, reference/idea, research article) with valid frontmatter, index/log updated, raw cleared, compile commit", "files": []},
+  {"id": 1, "prompt": "Compile the knowledge base — process everything new in raw/ into the wiki.", "expected_output": "Duplicate-topic clip merges into existing note; [tagged] entry untouched; task-like TODO routed to projects, not research", "files": []},
+  {"id": 2, "prompt": "Compile the knowledge base — process everything new in raw/ into the wiki.", "expected_output": "Empty run: nothing invented, wiki untouched, heartbeat log row + commit", "files": []}
+ ]
+}
