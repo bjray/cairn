@@ -56,11 +56,16 @@ Read the answers back as a summary before writing anything.
 4. Install the engine skills into `.claude/skills/` (`kb-compile`, and `cairn-init` only
    if the user wants to create further vaults from inside this one).
 5. Write `system/vault-profile.yml` from the interview. Follow `profile.schema.yml`.
-6. Render `CLAUDE.md` from `vault-skeleton/CLAUDE.md.tmpl` — vault name, description, and
-   any sync specifics from the interview.
-7. Render `wiki/index.md` from `wiki/index.md.tmpl` — one section per domain, in profile
-   order, using each purpose as its subtitle. Empty domains are listed with no entries;
-   that's correct, not a gap.
+6. **Render every `.tmpl` in the skeleton, then remove the `.tmpl` files.** There are
+   three, and missing one leaves raw `{{placeholders}}` in a live vault:
+   - `CLAUDE.md.tmpl` → `CLAUDE.md` — vault name, description, sync specifics
+   - `wiki/index.md.tmpl` → `wiki/index.md` — one section per domain, in profile order,
+     each purpose as its subtitle. Empty domains are listed with no entries; that's
+     correct, not a gap.
+   - `wiki/lexicon.md.tmpl` → `wiki/lexicon.md` — the empty registry, dated today
+
+   Don't hardcode this list — render whatever `.tmpl` files the skeleton actually
+   contains, so a template added later can't be silently skipped.
 8. Leave `raw/inbox.md` and `raw/key-terms.md` as the skeleton's empty scaffolds. Do not
    seed example content — a vault that ships with fake notes teaches the compiler to
    treat fiction as knowledge.

@@ -76,6 +76,9 @@ tags: []
 A note whose `domain` is not declared there is a lint error. Never invent a domain,
 and never assume a vault has any particular one — read the profile.
 
+The single exception: **`domain: concepts` is a reserved value**, always valid and never
+declared in a profile. Only concept notes use it.
+
 **Base type registry** (every vault has these):
 `note` `article` `synthesis` `person` `decision` `idea` `reference` `project` `concept` `index`
 
@@ -112,8 +115,8 @@ the vault remembers that. **Three ways in, one place it lives.**
 
 **The store:** one `type: concept` note per term in `wiki/concepts/`. This is the only
 authoritative copy. It's linkable (`[[the-place]]`), supersedable, and lints like any
-other note. Concept notes carry `domain:` set to the vault's first declared domain only
-as a formality — they are engine-owned and live outside the domain tree.
+other note. Concept notes carry the reserved `domain: concepts` — they live outside the
+domain tree and are valid in every vault regardless of what its profile declares.
 
 **The view:** `wiki/lexicon.md` — one line per term, regenerated every compile, never
 hand-edited. Kept small enough that every session can afford to read it. If it grows into
@@ -135,8 +138,15 @@ concept note, key-terms.md wins — it is the more recent deliberate statement �
 prior text is preserved in `## History` and the overwrite is **reported**. This is the one
 narrow exception to rule 2, and it is never silent.
 
-**Removal.** A term dropped from `key-terms.md` is not deleted: `status: archived`, a
-`## History` line, and a move to the lexicon's archived section (rule 5).
+**Removal — scoped by source.** A term dropped from `key-terms.md` is not deleted:
+`status: archived`, a `## History` line, and a move to the lexicon's archived section
+(rule 5).
+
+**This applies only to notes whose `source:` is `key-terms.md`.** A concept sourced from
+`inbox` or `conversation` came from a transient input that the compiler itself clears
+after processing — its absence from `key-terms.md` is the normal steady state, not a
+removal. Archiving those would silently destroy every `[define]`-sourced term on its
+second compile. Absence is only meaningful for the input a term actually came from.
 
 **Tags.** A `tags:` value is *registered* if a concept note exists for it. Unregistered
 tags are legal but get listed by the linter as concept candidates — that queue is the

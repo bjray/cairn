@@ -73,21 +73,33 @@ newly-defined terms. The constitution's "Terms & concepts" section is the law he
 2. **Collect `[define]` lines** from `inbox.md`:
    `- YYYY-MM-DD — [define] term — meaning`.
 3. **Resolve duplicates** by precedence: `key-terms.md` > `[define]` > conversation.
-   The losing text goes in the note's `## History`, never in the trash.
+   The losing text goes in the note's `## History`, never in the trash — and if the
+   winner and loser disagree *substantively*, say so in the History line and flag it in
+   the report. A rejected definition is often the human telling you something changed.
 4. **For each term, compare** its source block against the `## Source (verbatim)` block in
    `wiki/concepts/<term>.md` — a literal string compare:
    - **No note exists** → create from the resolved `concept` template. Write
      `## Definition` in your own words (not a paste of the source), fill `aliases`,
      `source`, `status`, and stamp `## History` with
      `YYYY-MM-DDTHH:MM — created from <source>`.
-   - **Blocks match** → nothing changed. Don't touch the note, don't bump `updated`.
+   - **Blocks match, and no competing input exists** → nothing changed. Don't touch the
+     note, don't bump `updated`.
+   - **Blocks match, but a lower-precedence input also defined this term** → the
+     definition stands, but append the rejected text to `## History` and bump `updated`.
+     Silently discarding a definition the human wrote is a silent drop.
    - **Blocks differ** → rewrite `## Definition` and `## Source (verbatim)`, bump
      `updated`, and append a `## History` line with the timestamp, what changed, and the
      prior text. If the note carried a human edit that this overwrites, preserve the
      human's wording in History and **flag it in the report** — the one sanctioned
      exception to "human edits are authoritative," and it is never silent.
-   - **Note exists but the term is gone from `key-terms.md`** → set `status: archived`,
-     append a History line, move it to the lexicon's archived section. Never delete.
+   - **Note exists, `source: key-terms.md`, term gone from `key-terms.md`** → set
+     `status: archived`, append a History line, move it to the lexicon's archived
+     section. Never delete.
+   - **Note exists, `source: inbox` or `conversation`, term not in `key-terms.md`** →
+     **leave it completely alone.** Those inputs are transient and the compiler clears
+     them itself after processing; absence is the normal steady state. Archiving here
+     would destroy every `[define]`-sourced term on its second compile. Only ever judge
+     absence against the input a term actually came from.
 5. **Regenerate `wiki/lexicon.md`** from the concept notes on disk — one row per active
    term (term, one-line gloss, aliases, source), archived terms below. It is generated
    output: rewrite it wholesale, never hand-patch. Keep glosses to one line; a lexicon

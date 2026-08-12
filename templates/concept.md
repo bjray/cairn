@@ -1,6 +1,6 @@
 ---
 type: concept
-domain: {{domain}}
+domain: concepts     # reserved value — never a declared domain
 created: {{date}}
 updated: {{date}}
 aliases: []          # other phrasings that mean this same thing
