@@ -1,0 +1,47 @@
+# Example: a work knowledge base for a product manager.
+# Different domains, different types, same engine.
+
+vault:
+  name: work-kb
+  description: Work knowledge base — product, meetings, people, decisions
+
+domains:
+  - id: product
+    purpose: Specs, requirements, roadmap thinking, competitive notes
+  - id: meetings
+    purpose: Meeting notes, one-on-ones, retros
+  - id: people
+    purpose: Colleagues, stakeholders, reporting lines, working styles
+  - id: decisions
+    purpose: What was decided, by whom, and why
+  - id: reference
+    purpose: Process, tooling, org knowledge, anything that doesn't fit above
+    default: true
+
+types:
+  extends: base
+  add:
+    - id: meeting-note
+      requires: [attendees, meeting-date]
+      description: Notes from a single meeting
+    - id: one-on-one
+      requires: [person, meeting-date]
+      description: Running notes for a recurring 1:1
+    - id: spec
+      requires: [status]
+      description: A product or technical specification
+    - id: retro
+      requires: [meeting-date]
+      description: Retrospective findings and actions
+
+conventions:
+  project_parent: null        # work projects don't ladder to personal goals
+  stale_project_days: 7       # work moves faster
+  link_terms_on_first_mention: true
+
+sync:
+  multi_machine: false
+  remote: origin
+  notes: >-
+    Work-owned repository. Never mix personal content in. Engine fixes made here
+    may be work product — raise them upstream from a personal machine instead.

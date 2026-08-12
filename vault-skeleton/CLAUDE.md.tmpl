@@ -1,0 +1,29 @@
+# CLAUDE.md — {{vault_name}}
+
+{{vault_description}}
+
+This is a **cairn vault**. Before doing anything here, read:
+
+1. `system/cairn/constitution.md` — the operating law. It governs how raw material
+   becomes wiki notes, how notes are linked and linted, and what you may and may not
+   touch. It is engine-owned: never edit it here.
+2. `system/vault-profile.yml` — this vault's domains, note types, and conventions.
+   Never assume a domain or type exists; read it.
+3. `wiki/lexicon.md` — what this vault's loaded terms mean. Small by design; read it
+   before answering anything.
+
+## Vault-specific notes
+
+{{vault_notes}}
+
+## Engine
+
+Vendored under `system/cairn/` at version `{{engine_version}}`. Refresh with:
+
+```
+sh system/cairn/bin/cairn-update.sh <path-to-cairn-repo> . --apply
+```
+
+Never edit anything under `system/cairn/` or `.claude/skills/` in this repo — those
+paths are replaced wholesale on update, and local edits are silently destroyed. Engine
+fixes go upstream to the cairn repo.

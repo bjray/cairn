@@ -1,57 +1,95 @@
-# Life OS — Plumbing Vault
+# cairn
 
-A stripped copy of the Life OS structure with **no personal content**. It exists to test
-one thing: the **key terms / lexicon** mechanism, on a machine where the real vault
-shouldn't live.
+An AI-compiled personal knowledge base. You dump raw material in; Claude compiles it
+into an interlinked markdown wiki, answers questions from it, and keeps it honest.
 
-## What's here
+A cairn is a stack of stones you build by hand to mark a route — each one added by
+whoever came through, so the next person can find the way. That's the idea: knowledge
+that compounds, in plain files you'll still be able to read in twenty years.
 
-Structure, templates, the constitution, and the `kb-compile` skill. That's it.
+## Engine and store
+
+**cairn is the engine. Your vault is the store.** They live in separate repositories.
+
+The engine holds the operating law, the note templates, and the compiler skill. A vault
+holds *your* content plus a profile declaring what that content is made of. The engine is
+vendored into each vault under `system/cairn/` and refreshed with one command — so a fix
+made once reaches every vault, and a bare `git clone` of any vault still works with no
+bootstrap.
+
+This split is what lets one person keep a personal vault on a private remote and a work
+vault on a work-owned remote, running the same engine, sharing nothing.
 
 ```
-raw/key-terms.md              ← your glossary (empty scaffold)
-raw/inbox.md                  ← header only
-wiki/reference/concepts/      ← where concept notes land (empty)
-wiki/reference/lexicon.md     ← generated registry (0 terms)
-system/templates/concept.md   ← the note shape
-.claude/skills/kb-compile/    ← the compiler, including the terms pass
+cairn/                          your-vault/
+├── constitution.md             ├── CLAUDE.md              ← points at the engine
+├── templates/                  ├── system/
+├── skills/                     │   ├── vault-profile.yml  ← domains, types, conventions
+│   ├── kb-compile/             │   ├── cairn/             ← vendored engine
+│   └── cairn-init/             │   └── templates/         ← your overrides
+├── bin/                        ├── raw/                   ← human territory
+├── profile.schema.yml          ├── wiki/                  ← AI territory
+└── vault-skeleton/             └── outputs/
 ```
 
-**What's deliberately missing:** every compiled note, all raw material, the build plan,
-the sync setup, and — most importantly — any git history connecting this to the primary
-`life-os` repo. There is nothing here to leak.
+## Nothing is hard-coded
 
-## Hard rule
+Domains and note types are **declared per vault**, not baked into the engine. A personal
+vault might use `vision / projects / research / health / reference`; a work vault might
+use `product / meetings / people / decisions / reference` with types like `meeting-note`
+and `retro`. Same engine, different vocabulary.
 
-**Never add a remote pointing at the primary `life-os` repo. Never pull or push between
-the two.** Terms travel home by copy-paste, not by git. Wiring them together would defeat
-the entire reason this vault exists.
+See `profile.schema.yml` for the schema and `docs/examples/` for both shapes side by side.
 
-## Testing the terms mechanism
+## Getting started
 
-1. Add a few terms to `raw/key-terms.md`:
+```
+# create a vault (interviews you about domains and types)
+"cairn init ~/Projects/my-kb"
 
-   ```
-   ## the-place
-   aliases: the place, our place, the property
-   The property we actually want to live on. Not a house — land, view, room for people.
-   ```
+# then, from inside the vault
+"compile"
+```
 
-2. Say **"compile"**. Expect: a concept note per term in `wiki/reference/concepts/`,
-   `wiki/reference/lexicon.md` regenerated with one row each, a log row, and a commit.
-3. **Edit** one term's wording in `key-terms.md`. Compile again. Expect: only that note
-   updates, `updated` bumps, and `## History` gains a timestamped line holding the prior
-   text. Untouched terms should not be modified at all.
-4. **Delete** a term from `key-terms.md`. Compile. Expect: `status: archived`, a History
-   line, and a move to the lexicon's archived section — **not** a deleted file.
-5. Add a `[define] term — meaning` line to `raw/inbox.md`. Compile. Expect: a concept
-   note sourced from `inbox`, and that line cleared from the inbox afterward.
+Refresh a vault's engine later:
 
-Steps 3 and 4 are the ones worth watching closely — they're the paths that have no eval
-coverage yet in the primary vault.
+```
+sh system/cairn/bin/cairn-update.sh <path-to-cairn> . --apply
+```
 
-## Carrying results home
+It's a dry run without `--apply`, and it refuses to run if you've edited engine files
+inside the vault — that drift belongs upstream.
 
-Anything you want to keep: copy the term text out of this `raw/key-terms.md` and paste it
-into the real one on your personal machine. Note anything the compiler got wrong so the
-behavior can be fixed at the source.
+## The five behaviors
+
+**Compile** raw material into linked wiki notes · **Answer** questions from the wiki,
+citing notes · **Manage** projects and what's stalled · **Lint** for contradictions,
+orphans, and schema violations · **Ingest** links and thoughts mid-conversation.
+
+Full definitions in `constitution.md`.
+
+## Key terms
+
+Some words mean something specific to you. `raw/key-terms.md` is a plain glossary you
+edit whenever you like; the compiler turns it into concept notes and a one-line-per-term
+lexicon that every session reads before answering. Three ways in — the glossary, a
+`[define]` marker in the inbox, or just saying it mid-conversation — and one canonical
+place it lives.
+
+## Design commitments
+
+- **Plain text, no magic.** Markdown, wikilinks, an index. No vector database, no hidden
+  state. A vault must stay fully usable by a human with a text editor and no AI at all.
+- **Never destroy knowledge.** Notes are superseded or archived, never deleted.
+- **Silence is failure.** Every raw item is either filed or explicitly reported. A run
+  that finds nothing still logs a heartbeat.
+- **Git is the sync layer.** Two machines, one private remote, no infrastructure.
+
+## Status
+
+Early. The engine works; the terms pass has partial eval coverage (see
+`skills/kb-compile/evals/evals.json` — ids 3–7 are written but not yet run).
+Built as a DIY answer to one person's actual needs, then generalized.
+
+Run `sh bin/scrub-check.sh` before sharing this repo — it's the gate that keeps vault
+content out of the engine.

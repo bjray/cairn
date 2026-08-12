@@ -1,0 +1,43 @@
+# Example: a personal life knowledge base.
+
+vault:
+  name: life-os
+  description: Personal knowledge base — visions, projects, research, health, reference
+
+domains:
+  - id: vision
+    purpose: Visions, goals, yearly and quarterly plans
+  - id: projects
+    purpose: One note per project, plus the dashboard
+  - id: research
+    purpose: Compiled articles, topic syntheses, digests
+  - id: health
+    purpose: Body composition, training, and nutrition insights (not raw data)
+  - id: reference
+    purpose: People, decisions, ideas, household, commitments
+    default: true
+
+types:
+  extends: base
+  add:
+    - id: vision
+      requires: [horizon]
+      template: vision.md
+      description: A long-horizon picture of where life is going
+    - id: goal
+      requires: [vision, target-date]
+      description: A dated commitment serving a vision
+    - id: digest
+      description: Periodic roll-up of activity or reading
+    - id: health-insight
+      description: A conclusion drawn from body/training/nutrition data
+
+conventions:
+  project_parent: goal
+  stale_project_days: 14
+  link_terms_on_first_mention: true
+
+sync:
+  multi_machine: true
+  remote: origin
+  notes: Two Macs on a private GitHub remote. Never compile on both at once.

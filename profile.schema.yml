@@ -1,0 +1,49 @@
+# cairn — vault profile schema
+#
+# Every vault has a `system/vault-profile.yml`. It declares what this particular
+# knowledge base is made of: its domains, its note types, and its conventions.
+# The engine reads it before doing anything; the constitution defers to it.
+#
+# This file documents the schema. For working examples see docs/examples/.
+
+# ─── vault identity ────────────────────────────────────────────────────────────
+vault:
+  name: string            # REQUIRED. Short slug, e.g. "life-os"
+  description: string     # REQUIRED. One line — shown in the index header
+  owner: string           # optional. Whose vault this is
+
+# ─── domains ───────────────────────────────────────────────────────────────────
+# REQUIRED, at least one. Each becomes a directory under wiki/ and a section in
+# wiki/index.md. A note whose `domain:` is not declared here is a lint error.
+#
+# Reserved (may not be used as a domain id): concepts
+domains:
+  - id: string            # REQUIRED. kebab-case; becomes wiki/<id>/
+    purpose: string       # REQUIRED. One line — what belongs here, shown in the index
+    default: bool         # optional. Where to file when genuinely torn. One domain max.
+
+# ─── types ─────────────────────────────────────────────────────────────────────
+# The base registry is always available:
+#   note article synthesis person decision idea reference project concept index
+# `add` extends it for this vault. A type in neither is a lint error.
+types:
+  extends: base           # only supported value today
+  add:
+    - id: string          # REQUIRED. kebab-case
+      requires: [string]  # optional. Extra frontmatter keys this type must carry
+      template: string    # optional. Filename in system/templates/ or the engine's
+      description: string # optional. What this type is for
+
+# ─── conventions ───────────────────────────────────────────────────────────────
+conventions:
+  project_parent: string|null   # Type a project must link up to (e.g. "goal").
+                                # null = projects stand alone; not an error.
+  stale_project_days: int       # Default 14. No update in this long → flagged stale.
+  link_terms_on_first_mention: bool  # Default true.
+
+# ─── sync ──────────────────────────────────────────────────────────────────────
+# Informational — tells a session how this vault travels. Does not configure git.
+sync:
+  multi_machine: bool     # Default false. If true, sessions pull at start, push at end.
+  remote: string|null     # Remote name, or null for local-only vaults.
+  notes: string           # optional. Anything a session should know before pushing.
