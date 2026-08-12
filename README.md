@@ -92,4 +92,11 @@ Early. The engine works; the terms pass has partial eval coverage (see
 Built as a DIY answer to one person's actual needs, then generalized.
 
 Run `sh bin/scrub-check.sh` before sharing this repo — it's the gate that keeps vault
-content out of the engine.
+content out of the engine. (It is engine-facing only: run inside a *vault* it will
+correctly fail, because a vault is full of exactly the content it screens for.)
+
+## License
+
+MIT — see `LICENSE`. Use it, fork it, make it yours. If you build a vault with it, the
+vault is yours alone; nothing in this engine phones home, and there is nothing to phone
+home with.
