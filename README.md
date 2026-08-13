@@ -43,22 +43,42 @@ See `profile.schema.yml` for the schema and `docs/examples/` for both shapes sid
 
 ## Getting started
 
+**Once per machine** — makes the skills discoverable from any directory, including the
+empty one you're about to turn into a vault:
+
 ```
-# create a vault (interviews you about domains and types)
+git clone https://github.com/bjray/cairn
+sh cairn/bin/cairn-install.sh
+```
+
+**Create a vault.** From anywhere; it interviews you about domains and types:
+
+```
 "cairn init ~/Projects/my-kb"
-
-# then, from inside the vault
-"compile"
 ```
 
-Refresh a vault's engine later:
+**Then work from inside the vault, not from here.** `cairn init` vendors the skills into
+the vault's own `.claude/skills/`, so day to day you only ever `cd` to your vault:
 
 ```
-sh system/cairn/bin/cairn-update.sh <path-to-cairn> . --apply
+cd ~/Projects/my-kb
+"compile"      # raw/ -> wiki/
+"lint"         # health check
+```
+
+You come back to the cairn repo for exactly two things: pulling engine updates, and
+fixing the engine itself.
+
+**Refresh a vault's engine:**
+
+```
+git -C ~/cairn pull
+sh system/cairn/bin/cairn-update.sh ~/cairn . --apply
 ```
 
 It's a dry run without `--apply`, and it refuses to run if you've edited engine files
-inside the vault — that drift belongs upstream.
+inside the vault — that drift belongs upstream. Re-run `cairn-install.sh` after a pull
+too, since the machine-level copies don't update themselves.
 
 ## The five behaviors
 
@@ -67,6 +87,17 @@ citing notes · **Manage** projects and what's stalled · **Lint** for contradic
 orphans, and schema violations · **Ingest** links and thoughts mid-conversation.
 
 Full definitions in `constitution.md`.
+
+Lint splits in two on purpose. `bin/lint-scan.py` (stdlib python3, zero dependencies) does
+the deterministic half — schema, undeclared domains and types, broken links, orphans,
+stale projects, lexicon drift — and you can run it standalone against any vault:
+
+```
+python3 bin/lint-scan.py ~/Projects/my-kb
+```
+
+The `kb-lint` skill runs that, fixes what's mechanically safe, and then does the half a
+parser can't: contradictions between notes, gaps, and connections worth making.
 
 ## Key terms
 

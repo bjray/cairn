@@ -188,7 +188,9 @@ one — a project serving no parent gets flagged, not silently accepted. If no
 
 ### 4. Lint (health check)
 
-Checks: contradictions between notes; frontmatter schema violations *against the profile*;
+The deterministic half runs as `system/cairn/bin/lint-scan.py` (stdlib python3, no
+dependencies); the judgment half needs reading and is the session's job. Checks:
+contradictions between notes; frontmatter schema violations *against the profile*;
 undeclared domains or types; orphan notes; broken links; stale projects; gaps worth
 filling; cross-domain connections worth surfacing. Lexicon checks: concept notes whose
 `## Source (verbatim)` no longer matches `raw/key-terms.md` (a missed terms pass);

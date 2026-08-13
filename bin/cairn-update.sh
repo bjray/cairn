@@ -47,8 +47,14 @@ echo "  system/cairn/constitution.md"
 echo "  system/cairn/templates/"
 echo "  system/cairn/bin/"
 echo "  system/cairn/VERSION            ($CURRENT -> $VERSION)"
-echo "  .claude/skills/kb-compile/"
-[ -d "$VAULT/.claude/skills/cairn-init" ] && echo "  .claude/skills/cairn-init/"
+for s in "$ENGINE"/skills/*/; do
+  name=$(basename "$s")
+  if [ -d "$VAULT/.claude/skills/$name" ]; then
+    echo "  .claude/skills/$name/"
+  else
+    echo "  .claude/skills/$name/    (new)"
+  fi
+done
 echo
 echo "untouched: raw/ wiki/ outputs/ system/log.md system/lint-reports/"
 echo "           system/templates/ system/vault-profile.yml CLAUDE.md"
@@ -61,15 +67,16 @@ fi
 
 echo
 mkdir -p "$VAULT/system/cairn" "$VAULT/.claude/skills"
-rm -rf "$VAULT/system/cairn/templates" "$VAULT/system/cairn/bin" "$VAULT/.claude/skills/kb-compile"
+rm -rf "$VAULT/system/cairn/templates" "$VAULT/system/cairn/bin"
 cp "$ENGINE/constitution.md" "$VAULT/system/cairn/constitution.md"
 cp -R "$ENGINE/templates" "$VAULT/system/cairn/templates"
 cp -R "$ENGINE/bin" "$VAULT/system/cairn/bin"
-cp -R "$ENGINE/skills/kb-compile" "$VAULT/.claude/skills/kb-compile"
-if [ -d "$VAULT/.claude/skills/cairn-init" ]; then
-  rm -rf "$VAULT/.claude/skills/cairn-init"
-  cp -R "$ENGINE/skills/cairn-init" "$VAULT/.claude/skills/cairn-init"
-fi
+# every engine skill, so a newly added one is never silently skipped
+for s in "$ENGINE"/skills/*/; do
+  name=$(basename "$s")
+  rm -rf "$VAULT/.claude/skills/$name"
+  cp -R "$s" "$VAULT/.claude/skills/$name"
+done
 echo "$VERSION" > "$VAULT/system/cairn/VERSION"
 
 echo "engine updated: $CURRENT -> $VERSION"

@@ -1,0 +1,21 @@
+{
+  "skill_name": "kb-lint",
+  "note": "The deterministic scanner (bin/lint-scan.py) was verified 2026-08-13 by planting each defect class into a scratch copy of a real vault and confirming detection — see ids 0-8, all of which exercise the scanner rather than the model. Ids 9-12 cover the judgment half and are NOT verified: they need fixture vaults with deliberately contradictory content, which do not exist yet.",
+  "status": "scanner verified by planted canaries; judgment half unverified",
+  "evals": [
+    {"id": 0, "prompt": "Lint the vault.", "expected_output": "SCANNER/link: a wikilink with no matching note is reported as an error with the containing file's path", "status": "canary-verified 2026-08-13"},
+    {"id": 1, "prompt": "Lint the vault.", "expected_output": "SCANNER/domain: a note whose domain is not declared in vault-profile.yml is an error; 'concepts' is exempt as a reserved value", "status": "canary-verified 2026-08-13"},
+    {"id": 2, "prompt": "Lint the vault.", "expected_output": "SCANNER/type: a type in neither the base registry nor types.add is an error", "status": "canary-verified 2026-08-13"},
+    {"id": 3, "prompt": "Lint the vault.", "expected_output": "SCANNER/frontmatter: a type's profile-declared required key, when missing, is an error. type: index is exempt from domain/created — generated maps carry neither.", "status": "canary-verified 2026-08-13"},
+    {"id": 4, "prompt": "Lint the vault.", "expected_output": "SCANNER/lexicon: a concept note whose '## Source (verbatim)' block no longer matches raw/key-terms.md is an error — a terms pass was missed and the wiki disagrees with the glossary", "status": "canary-verified 2026-08-13"},
+    {"id": 5, "prompt": "Lint the vault.", "expected_output": "SCANNER/orphan: a note unreachable from wiki/index.md by following wikilinks is a warning", "status": "canary-verified 2026-08-13"},
+    {"id": 6, "prompt": "Lint the vault.", "expected_output": "SCANNER/stale: an active project whose updated date exceeds conventions.stale_project_days is a warning, using the vault's own threshold (7 in the work example, 14 default)", "status": "canary-verified 2026-08-13"},
+    {"id": 7, "prompt": "Lint the vault.", "expected_output": "SCANNER/orphan-project: when conventions.project_parent is set, a project linking to no note of that type is a warning; when null, projects standing alone is NOT a finding", "status": "canary-verified 2026-08-13"},
+    {"id": 8, "prompt": "Lint the vault.", "expected_output": "SCANNER/robustness: profile values with trailing inline comments parse as their scalar type, not strings; a vault with no findings prints clean and exits 0", "status": "canary-verified 2026-08-13"},
+
+    {"id": 9, "prompt": "Lint the vault.", "expected_output": "JUDGMENT/contradiction: two notes asserting incompatible facts are reported with both sides quoted and paths given, and are NOT silently resolved", "status": "not-run"},
+    {"id": 10, "prompt": "Lint the vault.", "expected_output": "JUDGMENT/no-fabricated-dates: a note missing `updated` is repaired using the file's last commit date, never today's date", "status": "not-run"},
+    {"id": 11, "prompt": "Lint the vault.", "expected_output": "JUDGMENT/boundaries: raw/ is never edited; lexicon drift is reported as 'run a compile' rather than regenerated here; engine paths are reported as drift, never repaired locally", "status": "not-run"},
+    {"id": 12, "prompt": "Lint the vault.", "expected_output": "JUDGMENT/ambiguity: a broken link with two plausible targets is reported rather than guessed; a broken link with exactly one obvious match is fixed and disclosed", "status": "not-run"}
+  ]
+}
