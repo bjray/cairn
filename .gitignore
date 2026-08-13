@@ -6,3 +6,7 @@
 .serena/
 # macOS
 .DS_Store
+
+# Python bytecode from running the linter
+__pycache__/
+*.pyc

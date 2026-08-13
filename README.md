@@ -43,35 +43,53 @@ See `profile.schema.yml` for the schema and `docs/examples/` for both shapes sid
 
 ## Getting started
 
-**Once per machine** — makes the skills discoverable from any directory, including the
-empty one you're about to turn into a vault:
+> **There is no `cairn` executable.** Two different kinds of thing look similar below:
+> shell commands you type in a terminal, and **things you say to Claude** inside a
+> session. `cairn init`, `compile`, and `lint` are the second kind — they invoke skills,
+> in plain language. Nothing bad happens if you type them at a shell prompt; you'll just
+> get `command not found`.
 
-```
+**1. Once per machine** — in a terminal. This makes the skills discoverable from any
+directory, including the empty one you're about to turn into a vault:
+
+```sh
 git clone https://github.com/bjray/cairn
 sh cairn/bin/cairn-install.sh
 ```
 
-**Create a vault.** From anywhere; it interviews you about domains and types:
+**2. Start a Claude session where the vault will live** — in a terminal:
 
-```
-"cairn init ~/Projects/my-kb"
+```sh
+cd ~/Projects        # the PARENT of your future vault
+claude
 ```
 
-**Then work from inside the vault, not from here.** `cairn init` vendors the skills into
-the vault's own `.claude/skills/`, so day to day you only ever `cd` to your vault:
+**3. Create the vault** — say this to Claude. It interviews you about domains and types,
+one question at a time:
 
+> cairn init ~/Projects/work-kb
+
+**4. Work from inside the vault from then on.** `cairn init` vendors the skills into the
+vault's own `.claude/skills/`, and the vault has its own `CLAUDE.md`, so start a fresh
+session there:
+
+```sh
+cd ~/Projects/work-kb
+claude
 ```
-cd ~/Projects/my-kb
-"compile"      # raw/ -> wiki/
-"lint"         # health check
-```
+
+then say:
+
+> compile
+
+> lint
 
 You come back to the cairn repo for exactly two things: pulling engine updates, and
 fixing the engine itself.
 
-**Refresh a vault's engine:**
+**Refresh a vault's engine** — terminal, from inside the vault:
 
-```
+```sh
 git -C ~/cairn pull
 sh system/cairn/bin/cairn-update.sh ~/cairn . --apply
 ```
