@@ -218,6 +218,15 @@ class Scan:
                     self.add("warn", "location",
                              f"filed under wiki/{parts[1]}/ but declares domain '{d}'", rel)
 
+            # the constitution requires notes to end with a Connections section;
+            # generated maps and reports are exempt
+            if fm.get("type") not in ("index", "report"):
+                body = open(path, encoding="utf-8").read()
+                if not re.search(r"^##+\s+Connections\s*$", body, re.M):
+                    self.add("warn", "connections",
+                             "no '## Connections' section — the note cannot be "
+                             "reached by following links from its neighbours", rel)
+
             fm["_path"], fm["_rel"] = path, rel
             self.notes[base] = rel
             self.meta = getattr(self, "meta", {})
