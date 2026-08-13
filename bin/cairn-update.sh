@@ -22,6 +22,17 @@ fi
 [ -f "$ENGINE/constitution.md" ] || { echo "error: $ENGINE is not a cairn engine repo" >&2; exit 1; }
 [ -f "$VAULT/system/vault-profile.yml" ] || { echo "error: $VAULT is not a cairn vault (no system/vault-profile.yml)" >&2; exit 1; }
 
+# Bootstrap: a vault's copy of this script is, by definition, the OLD one — it is
+# part of what an update replaces. If it changed upstream (new skill to copy, new
+# path to handle), the stale copy does the work and silently misses it. So always
+# hand off to the engine's copy.
+SELF=$(cd "$(dirname "$0")" && pwd)/$(basename "$0")
+ENGINE_ABS=$(cd "$ENGINE" && pwd)
+if [ "$SELF" != "$ENGINE_ABS/bin/cairn-update.sh" ]; then
+  echo "(re-executing the engine's copy of this script — the vault's is stale by design)"
+  exec sh "$ENGINE_ABS/bin/cairn-update.sh" "$@"
+fi
+
 VERSION=$(cd "$ENGINE" && git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 CURRENT=$(cat "$VAULT/system/cairn/VERSION" 2>/dev/null || echo "none")
 
@@ -38,6 +49,8 @@ if [ -d "$VAULT/.git" ] && [ "$CURRENT" != "none" ]; then
     echo "$DRIFT" >&2
     echo "!! Those changes belong upstream in the engine repo, not here." >&2
     echo "!! Commit or discard them, then re-run." >&2
+    echo "!! (If these are an earlier update's own output, commit them first —" >&2
+    echo "!!  this check cannot tell update artifacts from hand edits.)" >&2
     exit 1
   fi
 fi
