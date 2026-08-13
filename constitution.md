@@ -80,7 +80,10 @@ The single exception: **`domain: concepts` is a reserved value**, always valid a
 declared in a profile. Only concept notes use it.
 
 **Base type registry** (every vault has these):
-`note` `article` `synthesis` `person` `decision` `idea` `reference` `project` `concept` `index`
+`note` `article` `synthesis` `person` `decision` `idea` `reference` `project` `concept` `index` `report`
+
+`report` is what the linter writes into `system/lint-reports/`; every vault gets it
+because every vault can be linted.
 
 Base type-specific required keys:
 

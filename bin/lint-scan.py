@@ -116,7 +116,7 @@ def frontmatter(path):
 # ---------------------------------------------------------------- the checks
 
 BASE_TYPES = {"note", "article", "synthesis", "person", "decision", "idea",
-              "reference", "project", "concept", "index"}
+              "reference", "project", "concept", "index", "report"}
 BASE_REQUIRED = {"type", "domain", "created", "updated"}
 TYPE_REQUIRED = {
     "article": ["source", "author", "clipped"],
