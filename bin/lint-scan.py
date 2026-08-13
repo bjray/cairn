@@ -170,7 +170,12 @@ class Scan:
     def scan_notes(self):
         declared, types, reqs = set(self.domains()), self.types(), self.type_requirements()
         wiki = os.path.join(self.root, "wiki")
-        for path in sorted(glob.glob(os.path.join(wiki, "**", "*.md"), recursive=True)):
+        # lint reports live under system/ but are notes: they carry frontmatter and
+        # get linked from the index, so they must be resolvable and schema-checked
+        paths = (sorted(glob.glob(os.path.join(wiki, "**", "*.md"), recursive=True)) +
+                 sorted(glob.glob(os.path.join(self.root, "system", "lint-reports",
+                                               "*.md"))))
+        for path in paths:
             rel = os.path.relpath(path, self.root)
             base = os.path.splitext(os.path.basename(path))[0]
             if base in self.notes:
@@ -211,9 +216,10 @@ class Scan:
             if DATE_RE.match(c) and DATE_RE.match(u) and u < c:
                 self.add("warn", "dates", f"updated ({u}) precedes created ({c})", rel)
 
-            # location must match declared domain
+            # location must match declared domain (reports live under system/ by design)
             parts = rel.split(os.sep)
-            if len(parts) > 2 and d and d != "concepts":
+            if len(parts) > 2 and d and d != "concepts" and parts[0] == "wiki" \
+                    and t != "report":
                 if parts[1] != d:
                     self.add("warn", "location",
                              f"filed under wiki/{parts[1]}/ but declares domain '{d}'", rel)
