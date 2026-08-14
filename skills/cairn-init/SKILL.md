@@ -49,7 +49,10 @@ Read the answers back as a summary before writing anything.
 
 ## 2. Scaffold
 
-1. Copy `vault-skeleton/` to the target path.
+1. Copy `vault-skeleton/` to the target path, **including dotfiles** — the skeleton's
+   top-level `.gitignore` and the nested `.gitkeep` files are part of it. Copy the
+   directory itself (`cp -R vault-skeleton/. <target>/`), not `vault-skeleton/*`, which
+   silently drops the `.gitignore` and leaves the vault committing editor state.
 2. Create `wiki/<id>/` for each declared domain, each with a `.gitkeep`.
 3. Vendor the engine into `system/cairn/`: `constitution.md`, `templates/`, `bin/`, and a
    `VERSION` file recording the engine commit this vault was initialized from.
@@ -75,6 +78,8 @@ Read the answers back as a summary before writing anything.
 - Every declared domain has a directory; every directory maps to a declared domain.
 - `wiki/concepts/` and `wiki/lexicon.md` exist and no domain is named `concepts`.
 - No template placeholder (`{{...}}`) survives in any rendered file.
+- `.gitignore` exists at the vault root — if it's missing, the copy in step 1 dropped
+  dotfiles and the `.gitkeep` files are gone too.
 - **Run `system/cairn/bin/scrub-check.sh`** if this vault will live anywhere shared —
   a fresh vault should be trivially clean, and a hit means the skeleton is contaminated.
 

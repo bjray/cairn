@@ -1,0 +1,23 @@
+# Machine-specific state. None of this is knowledge, and all of it churns on
+# every save — keep it out of the sync layer.
+
+# Obsidian workspace state. Note this ignores the *state*, not the whole
+# .obsidian/ directory: settings worth having on every machine (appearance,
+# hotkeys, and the excluded-files list that hides system/cairn/) live in
+# .obsidian/app.json and .obsidian/appearance.json and should be committed.
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+
+# Claude Code local permission grants — per-machine, not per-vault
+.claude/settings.local.json
+
+# Serena tool state
+.serena/
+
+# macOS
+.DS_Store
+
+# Python bytecode from running the vendored linter
+__pycache__/
+*.pyc
