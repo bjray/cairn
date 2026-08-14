@@ -84,6 +84,11 @@ then say:
 
 > lint
 
+**What a normal session looks like from here — [`docs/using-a-vault.md`](docs/using-a-vault.md).**
+Common actions, what to say versus what to type at a shell, and what to leave alone.
+`constitution.md` is the operating law and is written for Claude; that guide is written
+for you.
+
 You come back to the cairn repo for exactly two things: pulling engine updates, and
 fixing the engine itself.
 
