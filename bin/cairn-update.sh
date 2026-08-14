@@ -7,6 +7,12 @@
 # Engine-owned paths are replaced wholesale. Everything else in the vault is
 # never touched — raw/, wiki/, outputs/, system/log.md, system/lint-reports/,
 # system/templates/ (store-local), system/vault-profile.yml, and CLAUDE.md.
+#
+# One exception, and it is a creation and never a replacement: a vault root with
+# no .gitignore at all gets one seeded from the engine's skeleton. Vaults created
+# before the skeleton carried that file have none, and the visible symptom is an
+# Obsidian vault committing workspace state on every save. An existing .gitignore
+# is store-owned — never read, merged, or overwritten, however far it has drifted.
 
 set -eu
 
@@ -55,6 +61,13 @@ if [ -d "$VAULT/.git" ] && [ "$CURRENT" != "none" ]; then
   fi
 fi
 
+# Decided before the dry-run report so the report and the write agree exactly.
+# -e, not -f: anything already at that path counts as present and is left alone.
+SEED_GITIGNORE=no
+if [ ! -e "$VAULT/.gitignore" ] && [ -f "$ENGINE/vault-skeleton/.gitignore" ]; then
+  SEED_GITIGNORE=yes
+fi
+
 echo "would replace:"
 echo "  system/cairn/constitution.md"
 echo "  system/cairn/templates/"
@@ -68,9 +81,17 @@ for s in "$ENGINE"/skills/*/; do
     echo "  .claude/skills/$name/    (new)"
   fi
 done
+if [ "$SEED_GITIGNORE" = yes ]; then
+  echo
+  echo "would create (once, then never again):"
+  echo "  .gitignore                      seeded from the engine skeleton"
+fi
 echo
 echo "untouched: raw/ wiki/ outputs/ system/log.md system/lint-reports/"
 echo "           system/templates/ system/vault-profile.yml CLAUDE.md"
+if [ "$SEED_GITIGNORE" = no ] && [ -e "$VAULT/.gitignore" ]; then
+  echo "           .gitignore"
+fi
 
 if [ "$APPLY" != "--apply" ]; then
   echo
@@ -91,6 +112,10 @@ for s in "$ENGINE"/skills/*/; do
   cp -R "$s" "$VAULT/.claude/skills/$name"
 done
 echo "$VERSION" > "$VAULT/system/cairn/VERSION"
+if [ "$SEED_GITIGNORE" = yes ]; then
+  cp "$ENGINE/vault-skeleton/.gitignore" "$VAULT/.gitignore"
+  echo "created .gitignore — store-owned from here on; update will not touch it again"
+fi
 
 echo "engine updated: $CURRENT -> $VERSION"
 echo "review with 'git diff', then commit as: system: cairn engine -> $VERSION"

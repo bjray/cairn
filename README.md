@@ -98,6 +98,11 @@ It's a dry run without `--apply`, and it refuses to run if you've edited engine 
 inside the vault — that drift belongs upstream. Re-run `cairn-install.sh` after a pull
 too, since the machine-level copies don't update themselves.
 
+Update only ever *replaces* engine-owned paths. The lone exception is a creation: a vault
+whose root has no `.gitignore` at all gets one seeded from the skeleton, so vaults made
+before the skeleton carried that file stop committing editor state. An existing
+`.gitignore` is yours — never read, merged, or overwritten.
+
 ## The five behaviors
 
 **Compile** raw material into linked wiki notes · **Answer** questions from the wiki,
